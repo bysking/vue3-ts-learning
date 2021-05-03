@@ -1,10 +1,10 @@
 <template>
-    <img alt="Vue logo" src="./assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App" />
+    <HelloWorld msg="hello world" />
+    <div>{{ computedName }}</div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, reactive, ref, computed, watchEffect } from 'vue';
 import HelloWorld from './components/HelloWorld.vue';
 
 export default defineComponent({
@@ -12,16 +12,28 @@ export default defineComponent({
     components: {
         HelloWorld,
     },
+    // 只会在组件初始化的时候执行一次
+    setup() {
+        // 第二种方案
+        const nameRef = ref('111');
+
+        setInterval(() => {
+            nameRef.value += 1; // 值修改
+        }, 1000);
+
+        const computedName = computed(() => {
+            return nameRef.value + 'hh';
+        });
+
+        watchEffect(() => {
+            console.log(nameRef.value);
+        });
+
+        return {
+            computedName,
+        };
+    },
 });
 </script>
 
-<style lang="less">
-#app {
-    font-family: Avenir, Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-align: center;
-    color: #2c3e50;
-    margin-top: 60px;
-}
-</style>
+<style lang="less"></style>
