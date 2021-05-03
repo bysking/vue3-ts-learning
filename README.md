@@ -473,3 +473,96 @@ return (
 ```
 
 -   HelloWorld 如果以 tsx 文件形式编写，那么在另一个 tsx 里面引用它时，如果 prop 属性未传递，会自动编辑器报错提示
+
+-   json-schema 依赖库 ajv
+
+```js
+
+yarn add ajv -S
+```
+
+-   schema 校验以及自定义
+
+```js
+const Ajv = require('ajv');
+const ajv = new Ajv();
+ajv.addFormat('email', (data) => {
+    console.log(data);
+    return false;
+});
+
+const schema = {
+    type: 'object',
+    properties: {
+        foo: { type: 'integer' },
+        bar: { type: 'string', format: 'email' },
+    },
+    required: ['foo'],
+    additionalProperties: false,
+};
+const data = { foo: 1, bar: '2222222222' };
+
+const valid = ajv.validate(schema, data);
+console.log(ajv.errors);
+```
+
+-   自定义非校验值的自定义类型值类型
+
+```js
+const Ajv = require('ajv');
+const ajv = new Ajv();
+ajv.addFormat('email', (data) => {
+    // console.log(data);
+    return false;
+});
+ajv.addKeyword('testType', {
+    validate(schema, data) {
+        console.log(schema, data);
+        return true;
+    },
+    metaSchema: {
+        type: 'boolean',
+    },
+});
+
+const schema = {
+    type: 'object',
+    properties: {
+        foo: { type: 'integer', testType: true },
+        bar: { type: 'string', format: 'email' },
+    },
+    required: ['foo'],
+    additionalProperties: false,
+};
+const data = { foo: 1, bar: '2222222222' };
+
+const valid = ajv.validate(schema, data);
+console.log(ajv.errors);
+```
+
+-   自定义错误信息，首先安装 yarn add ajv-i18n -S
+
+```js
+ajv.addKeyword('testType', {
+    validate: function fn(schema, data) {
+        console.log(schema, data);
+
+        // 向函数对象上挂一个错误数组信息
+        fn.errors = [
+            {
+                instancePath: '/bar',
+                tschemaPath: '#/properties/bar/testType',
+                keyword: 'testType',
+                params: {},
+                message: 'qqqqqqqqqqqqqqqqqqqq',
+            },
+        ];
+        return false;
+    },
+    metaSchema: {
+        type: 'boolean',
+    },
+});
+```
+
+-   官方提供一个库 ajv-errors 给 ajv 实例进行拓展，支持自定义校验的提示信息
