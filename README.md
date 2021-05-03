@@ -424,3 +424,38 @@ let App = defineComponent({
 
 createApp(App).mount('#app');
 ```
+
+> jsx 开发 vue3 组件
+
+-   1 需要安装 jsx 解析库 （https://github.com/vuejs/jsx-next）
+-   2 项目根目录下的 babel.config.js 文件中配置
+
+```js
+module.exports = {
+    presets: ['@vue/cli-plugin-babel/preset'],
+    plugins: ['@vue/babel-plugin-jsx'], // 新增加的jsx解析插件
+};
+```
+
+-   3 App.jsx 的组件编码
+
+```js
+import { reactive, defineComponent } from 'vue';
+
+export default defineComponent({
+    setup() {
+        const state = reactive({
+            name: 55555555555555555,
+        });
+
+        setInterval(() => {
+            state.name += 2;
+        }, 200);
+
+        return () => {
+            // jsx语法, 类似直接写template模版
+            return <div>{state.name}</div>;
+        };
+    },
+});
+```
