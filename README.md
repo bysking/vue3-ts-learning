@@ -459,3 +459,17 @@ export default defineComponent({
     },
 });
 ```
+
+-   jsx 的好处是能在编译的时候检查组件的参数类型
+
+```js
+return (
+    <div>
+        <div>{state.name}</div>
+        {/* 会自动识别必传项 */}
+        <HelloWorld msg={111} />;
+    </div>
+);
+```
+
+-   HelloWorld 如果以 tsx 文件形式编写，那么在另一个 tsx 里面引用它时，如果 prop 属性未传递，会自动编辑器报错提示
